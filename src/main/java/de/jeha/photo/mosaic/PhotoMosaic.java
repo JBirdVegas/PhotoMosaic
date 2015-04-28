@@ -14,10 +14,12 @@ public class PhotoMosaic {
     private static final int TILE_HEIGHT = 30;
 
     public static void main(String... args) throws IOException {
+        System.setProperty("java.awt.headless", "true");
+
         BufferedImage image = ImageIO.read(new File("src/test/resources/sprd_logo_small.jpg"));
 
         BufferedImage scaledImage = ImageScaler.scale(image, TILE_WIDTH, TILE_HEIGHT);
-        ImageIO.write(scaledImage, "png", new File("target/sprd_logo_small.png"));
+        ImageIO.write(scaledImage, "png", new File("target/sprd_logo_small_scaled.png"));
     }
 
 }
