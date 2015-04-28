@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 /**
  * @author jenshadlich@googlemail.com
  */
-class ImageScaler {
+public class ImageScaler {
 
     public static BufferedImage scale(BufferedImage input, int width, int height) {
         final Image scaled = input.getScaledInstance(width, height, Image.SCALE_SMOOTH);
