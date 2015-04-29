@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
@@ -77,6 +78,19 @@ public class PhotoMosaic {
         final ColorModel cm = image.getColorModel();
         WritableRaster raster = image.copyData(null);
         return new BufferedImage(cm, raster, cm.isAlphaPremultiplied(), null);
+    }
+
+    /**
+     * Color distance as described by http://www.compuphase.com/cmetric.htm.
+     */
+    private static double colorDistance(Color c1, Color c2) {
+        int red1 = c1.getRed();
+        int red2 = c2.getRed();
+        int redMean = (red1 + red2) >> 1;
+        int r = red1 - red2;
+        int g = c1.getGreen() - c2.getGreen();
+        int b = c1.getBlue() - c2.getBlue();
+        return Math.sqrt((((512 + redMean) * r * r) >> 8) + 4 * g * g + (((767 - redMean) * b * b) >> 8));
     }
 
 }
