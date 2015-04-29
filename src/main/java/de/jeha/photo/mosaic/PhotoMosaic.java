@@ -26,11 +26,22 @@ public class PhotoMosaic {
     public static void main(String... args) throws IOException {
         System.setProperty("java.awt.headless", "true");
 
-        BufferedImage image = ImageIO.read(new File("src/test/resources/IMG_20150320_142153.jpg"));
+        final int tileWidth = TILE_WIDTH;
+        final int tileHeight = TILE_HEIGHT;
+
+        //BufferedImage image = ImageIO.read(new File("src/test/resources/IMG_20150320_142153.jpg"));
+        BufferedImage image = ImageIO.read(new File("src/test/resources/sprd_logo_small.jpg"));
         LOG.info("h={}, w={}", image.getHeight(), image.getWidth());
 
-        BufferedImage scaledImage = ImageScaler.scale(image, TILE_WIDTH, TILE_HEIGHT);
-
+        for (int x = 0; x < image.getWidth() - tileWidth; x += tileWidth) {
+            for (int y = 0; y < image.getHeight() - tileHeight; y += tileHeight) {
+                LOG.debug("tile x={}, y={}", x, y);
+                BufferedImage tile = image.getSubimage(x, y, tileWidth, tileHeight);
+                ColorCalculator.RGBA averageColor = ColorCalculator.averageColor(tile);
+                LOG.debug("tile average color r={}, g={}, b={}",
+                        (int) averageColor.getR(), (int) averageColor.getG(), (int) averageColor.getB());
+            }
+        }
     }
 
 }
