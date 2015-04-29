@@ -1,5 +1,6 @@
 package de.jeha.photo.mosaic;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 
@@ -69,6 +70,10 @@ public class ColorCalculator {
 
         public double getA() {
             return a;
+        }
+
+        public Color asColor() {
+            return new Color((int) r, (int) g, (int) b, (int) a);
         }
 
     }
