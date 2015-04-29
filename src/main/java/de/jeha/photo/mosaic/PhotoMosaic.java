@@ -22,18 +22,30 @@ public class PhotoMosaic {
     private static final int TILE_HEIGHT = 30;
 
     // TODO: collect cmd line arguments with args4j
-    private String targetFile;
+    private final String targetImageFilename;
     private String inputDirectory;
-    private boolean recursive = false;
+    private final boolean recursive = false;
+    private final int tileWidth;
+    private final int tileHeight;
+
+    public PhotoMosaic(String targetImageFilename, int tileWidth, int tileHeight) {
+        this.targetImageFilename = targetImageFilename;
+        this.tileWidth = tileWidth;
+        this.tileHeight = tileHeight;
+    }
 
     public static void main(String... args) throws IOException {
         System.setProperty("java.awt.headless", "true");
 
-        final int tileWidth = TILE_WIDTH;
-        final int tileHeight = TILE_HEIGHT;
+        final String targetImageFilename = "src/test/resources/IMG_20150320_142153.jpg";
+        //final String targetImageFilename = "src/test/resources/sprd_logo_small.jpg";
 
-        BufferedImage source = ImageIO.read(new File("src/test/resources/IMG_20150320_142153.jpg"));
-        //BufferedImage source = ImageIO.read(new File("src/test/resources/sprd_logo_small.jpg"));
+        new PhotoMosaic(targetImageFilename, TILE_WIDTH, TILE_HEIGHT).create();
+    }
+
+    private void create() throws IOException {
+        BufferedImage source = ImageIO.read(new File(targetImageFilename));
+        //BufferedImage source = ImageIO.read(new File(""));
         LOG.info("source image h={}, w={}", source.getHeight(), source.getWidth());
 
         // TODO: process the input directory to collect tiles and their average colors for the target image
@@ -74,7 +86,7 @@ public class PhotoMosaic {
         ImageIO.write(target, "png", new File("target/target_debug_rasterized.png"));
     }
 
-    private static BufferedImage copyImage(BufferedImage image) {
+    private BufferedImage copyImage(BufferedImage image) {
         final ColorModel cm = image.getColorModel();
         WritableRaster raster = image.copyData(null);
         return new BufferedImage(cm, raster, cm.isAlphaPremultiplied(), null);
@@ -83,7 +95,7 @@ public class PhotoMosaic {
     /**
      * Color distance as described by http://www.compuphase.com/cmetric.htm.
      */
-    private static double colorDistance(Color c1, Color c2) {
+    private double colorDistance(Color c1, Color c2) {
         int red1 = c1.getRed();
         int red2 = c2.getRed();
         int redMean = (red1 + red2) >> 1;
