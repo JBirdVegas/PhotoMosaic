@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 
@@ -29,19 +31,52 @@ public class PhotoMosaic {
         final int tileWidth = TILE_WIDTH;
         final int tileHeight = TILE_HEIGHT;
 
-        //BufferedImage image = ImageIO.read(new File("src/test/resources/IMG_20150320_142153.jpg"));
-        BufferedImage image = ImageIO.read(new File("src/test/resources/sprd_logo_small.jpg"));
-        LOG.info("h={}, w={}", image.getHeight(), image.getWidth());
+        BufferedImage source = ImageIO.read(new File("src/test/resources/IMG_20150320_142153.jpg"));
+        //BufferedImage source = ImageIO.read(new File("src/test/resources/sprd_logo_small.jpg"));
+        LOG.info("source image h={}, w={}", source.getHeight(), source.getWidth());
 
-        for (int x = 0; x < image.getWidth() - tileWidth; x += tileWidth) {
-            for (int y = 0; y < image.getHeight() - tileHeight; y += tileHeight) {
-                LOG.debug("tile x={}, y={}", x, y);
-                BufferedImage tile = image.getSubimage(x, y, tileWidth, tileHeight);
+        // TODO: process the input directory to collect tiles and their average colors for the target image
+
+        final int correctedWidth = (source.getWidth() / tileWidth) * tileWidth;
+        final int correctedHeight = (source.getHeight() / tileHeight) * tileHeight;
+        LOG.info("target image h={}, w={}", correctedHeight, correctedWidth);
+
+        BufferedImage target = copyImage(source).getSubimage(0, 0, correctedWidth, correctedHeight);
+
+        for (int x = 0; x < source.getWidth() - tileWidth; x += tileWidth) {
+            for (int y = 0; y < source.getHeight() - tileHeight; y += tileHeight) {
+                LOG.trace("tile x={}, y={}", x, y);
+                BufferedImage tile = source.getSubimage(x, y, tileWidth, tileHeight);
                 ColorCalculator.RGBA averageColor = ColorCalculator.averageColor(tile);
-                LOG.debug("tile average color r={}, g={}, b={}",
+                LOG.trace("tile average color r={}, g={}, b={}",
                         (int) averageColor.getR(), (int) averageColor.getG(), (int) averageColor.getB());
+                WritableRaster writableRaster = target.getWritableTile(x, y);
+
+                // TODO: find an image that matches the average color best
+
+                // just write the average color (= rasterization) for debug
+                double array[] = new double[4];
+                array[0] = averageColor.getR();
+                array[1] = averageColor.getG();
+                array[2] = averageColor.getB();
+                array[3] = 0.0;
+
+                for (int i = x; i < x + tileWidth; i++) {
+                    for (int j = y; j < y + tileHeight; j++) {
+                        writableRaster.setPixel(i, j, array);
+                    }
+                }
             }
         }
+
+        LOG.debug("Writing rasterized target image");
+        ImageIO.write(target, "png", new File("target/target_debug_rasterized.png"));
+    }
+
+    private static BufferedImage copyImage(BufferedImage image) {
+        final ColorModel cm = image.getColorModel();
+        WritableRaster raster = image.copyData(null);
+        return new BufferedImage(cm, raster, cm.isAlphaPremultiplied(), null);
     }
 
 }
