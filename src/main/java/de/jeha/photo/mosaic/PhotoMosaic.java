@@ -10,6 +10,8 @@ import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author jenshadlich@googlemail.com
@@ -23,10 +25,12 @@ public class PhotoMosaic {
 
     // TODO: collect cmd line arguments with args4j
     private final String targetImageFilename;
-    private String inputDirectory;
+    private final String inputDirectory = "/Users/jns/Pictures";
     private final boolean recursive = false;
     private final int tileWidth;
     private final int tileHeight;
+
+    private final Map<String, Tile> tileMap = new HashMap<>();
 
     public PhotoMosaic(String targetImageFilename, int tileWidth, int tileHeight) {
         this.targetImageFilename = targetImageFilename;
@@ -47,7 +51,7 @@ public class PhotoMosaic {
         BufferedImage source = ImageIO.read(new File(targetImageFilename));
         LOG.info("source image h={}, w={}", source.getHeight(), source.getWidth());
 
-        // TODO: process the input directory to collect tiles and their average colors for the target image
+        processInputDirectory();
 
         final int correctedWidth = (source.getWidth() / tileWidth) * tileWidth;
         final int correctedHeight = (source.getHeight() / tileHeight) * tileHeight;
@@ -83,6 +87,30 @@ public class PhotoMosaic {
 
         LOG.debug("Writing rasterized target image");
         ImageIO.write(target, "png", new File("target/target_debug_rasterized.png"));
+    }
+
+    private void processInputDirectory() throws IOException {
+        final File root = new File(inputDirectory);
+        if (root.exists() && root.canRead()) {
+            String[] filenames = root.list();
+            if (filenames != null) {
+                for (String filename : filenames) {
+                    // TODO: refactor supported file extensions
+                    if (filename.endsWith(".png") || filename.endsWith(".jpg")) {
+                        BufferedImage image = ImageIO.read(new File(root.getAbsolutePath() + "/" + filename));
+                        BufferedImage scaledImage = ImageScaler.scale(image, tileWidth, tileHeight);
+                        ColorCalculator.RGBA rgba = ColorCalculator.averageColor(scaledImage);
+                        tileMap.put(filename, new Tile(scaledImage, rgba.toColor()));
+                    } else {
+                        LOG.info("Ignore '{}' as input file: unsupported file extension", filename);
+                    }
+                }
+                LOG.info("added {} images as tiles", tileMap.size());
+            }
+        } else {
+            LOG.error("can't access directory '{}'", inputDirectory);
+        }
+
     }
 
     private BufferedImage copyImage(BufferedImage image) {
