@@ -75,7 +75,7 @@ public class ColorCalculator {
             return a;
         }
 
-        public Color asColor() {
+        public Color toColor() {
             return new Color((int) r, (int) g, (int) b, (int) a);
         }
 
