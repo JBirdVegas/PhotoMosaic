@@ -45,7 +45,6 @@ public class PhotoMosaic {
 
     private void create() throws IOException {
         BufferedImage source = ImageIO.read(new File(targetImageFilename));
-        //BufferedImage source = ImageIO.read(new File(""));
         LOG.info("source image h={}, w={}", source.getHeight(), source.getWidth());
 
         // TODO: process the input directory to collect tiles and their average colors for the target image
