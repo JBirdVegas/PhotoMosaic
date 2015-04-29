@@ -42,6 +42,9 @@ public class ColorCalculator {
         return new RGBA(r, g, b, a);
     }
 
+    /**
+     * TODO: maybe just use java.awt.Color
+     */
     public static class RGBA {
 
         private final double r;
