@@ -23,23 +23,25 @@ public class PhotoMosaic {
 
     private static final Logger LOG = LoggerFactory.getLogger(PhotoMosaic.class);
 
-    // TODO: collect cmd line arguments with args4j
-    private final String targetImageFilename;
-    private final String inputDirectory = "/Users/jns/Pictures";
+    private final String targetFilename;
+    private final String inputDirectory;
+    private final String outputFilename;
     private final boolean recursive = false;
     private final int tileWidth;
     private final int tileHeight;
 
     private final Map<String, Tile> tileMap = new HashMap<>();
 
-    public PhotoMosaic(String targetImageFilename, int tileWidth, int tileHeight) {
-        this.targetImageFilename = targetImageFilename;
+    public PhotoMosaic(String targetFilename, String inputDirectory, String outputFilename, int tileWidth, int tileHeight) {
+        this.targetFilename = targetFilename;
+        this.inputDirectory = inputDirectory;
+        this.outputFilename = outputFilename;
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
     }
 
     public void create() throws IOException {
-        BufferedImage source = ImageIO.read(new File(targetImageFilename));
+        BufferedImage source = ImageIO.read(new File(targetFilename));
         LOG.info("source image h={}, w={}", source.getHeight(), source.getWidth());
 
         processInputDirectory();
@@ -103,7 +105,7 @@ public class PhotoMosaic {
         //LOG.debug("Writing rasterized target image");
         //ImageIO.write(target, "png", new File("target/target_debug_rasterized.png"));
 
-        ImageIO.write(target, "png", new File("target/target.png"));
+        ImageIO.write(target, "png", new File(outputFilename));
     }
 
     private void processInputDirectory() throws IOException {
