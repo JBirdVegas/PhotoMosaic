@@ -2,9 +2,16 @@
 
 Creates a photo mosaic for a given target image from a collection of images.
 
+Build:
+(requires Java 7 or higher)
+mvn clean install
+
+Usage:
+java -jar target/photo-mosaic.jar -d <input directory> <target filename>
+
 TODO:
 - [x] make it basically work
-- [ ] use args4j to collect command line arguments
+- [x] use args4j to collect command line arguments
 - [ ] tidy up / refactor
 - [ ] support reading images for collection recursivly from given directory
 - [ ] introduce different strategies for placing the tiles
