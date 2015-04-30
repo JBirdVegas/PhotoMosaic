@@ -1,5 +1,8 @@
 package de.jeha.photo.mosaic;
 
+import de.jeha.photo.mosaic.core.ColorCalculator;
+import de.jeha.photo.mosaic.core.ImageScaler;
+import de.jeha.photo.mosaic.core.Tile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,5 +1,6 @@
 package de.jeha.photo.mosaic;
 
+import de.jeha.photo.mosaic.core.ColorCalculator;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;

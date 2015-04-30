@@ -1,4 +1,4 @@
-package de.jeha.photo.mosaic;
+package de.jeha.photo.mosaic.core;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
