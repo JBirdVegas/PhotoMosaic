@@ -20,9 +20,6 @@ public class PhotoMosaic {
 
     private static final Logger LOG = LoggerFactory.getLogger(PhotoMosaic.class);
 
-    private static final int TILE_WIDTH = 40;
-    private static final int TILE_HEIGHT = 30;
-
     // TODO: collect cmd line arguments with args4j
     private final String targetImageFilename;
     private final String inputDirectory = "/Users/jns/Pictures";
@@ -38,16 +35,7 @@ public class PhotoMosaic {
         this.tileHeight = tileHeight;
     }
 
-    public static void main(String... args) throws IOException {
-        System.setProperty("java.awt.headless", "true");
-
-        final String targetImageFilename = "src/test/resources/IMG_20150320_142153.jpg";
-        //final String targetImageFilename = "src/test/resources/sprd_logo_small.jpg";
-
-        new PhotoMosaic(targetImageFilename, TILE_WIDTH, TILE_HEIGHT).create();
-    }
-
-    private void create() throws IOException {
+    public void create() throws IOException {
         BufferedImage source = ImageIO.read(new File(targetImageFilename));
         LOG.info("source image h={}, w={}", source.getHeight(), source.getWidth());
 
