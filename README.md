@@ -25,6 +25,6 @@ java -jar target/photo-mosaic.jar -d <input directory> <target filename>
 Used a tile size of 40x30 pixels. The provided image collection was quite poor. Nevertheless, I like it :smile:
 <img src="https://github.com/jenshadlich/PhotoMosaic/blob/master/data/first_mosaic_result_400x300.png" alt="alt text" width="400" height="300">
 
-###### Input image
+##### Input image
 <img src="https://github.com/jenshadlich/PhotoMosaic/blob/master/data/first_mosaic_input_400x300.png" alt="alt text" width="400" height="300">
 
