@@ -15,7 +15,7 @@ public class ColorCalculatorTest {
 
     @Test
     public void testAverageColor000000() throws IOException {
-        ColorCalculator.RGBA result =
+        RGBA result =
                 ColorCalculator.averageColor(ImageIO.read(new File("src/test/resources/000000_100x100.png")));
 
         assertEquals("r", 0.0, result.getR(), 0.1);
@@ -26,7 +26,7 @@ public class ColorCalculatorTest {
 
     @Test
     public void testAverageColorFFFFFF() throws IOException {
-        ColorCalculator.RGBA result =
+        RGBA result =
                 ColorCalculator.averageColor(ImageIO.read(new File("src/test/resources/FFFFFF_100x100.png")));
 
         assertEquals("r", 255.0, result.getR(), 0.1);
@@ -37,7 +37,7 @@ public class ColorCalculatorTest {
 
     @Test
     public void testAverageColor00FF00() throws IOException {
-        ColorCalculator.RGBA result =
+        RGBA result =
                 ColorCalculator.averageColor(ImageIO.read(new File("src/test/resources/00FF00_100x100.png")));
 
         assertEquals("r", 0.0, result.getR(), 0.1);
@@ -48,7 +48,7 @@ public class ColorCalculatorTest {
 
     @Test
     public void testAverageColor999999() throws IOException {
-        ColorCalculator.RGBA result =
+        RGBA result =
                 ColorCalculator.averageColor(ImageIO.read(new File("src/test/resources/999999_100x100.png")));
 
         assertEquals("r", 153.0, result.getR(), 0.1);
@@ -59,7 +59,7 @@ public class ColorCalculatorTest {
 
     @Test
     public void testAverageColorSprdLogo() throws IOException {
-        ColorCalculator.RGBA result =
+        RGBA result =
                 ColorCalculator.averageColor(ImageIO.read(new File("src/test/resources/sprd_logo_small.jpg")));
 
         assertEquals("r", 62.3, result.getR(), 0.1);

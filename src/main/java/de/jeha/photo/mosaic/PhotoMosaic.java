@@ -2,6 +2,7 @@ package de.jeha.photo.mosaic;
 
 import de.jeha.photo.mosaic.core.ColorCalculator;
 import de.jeha.photo.mosaic.core.ImageScaler;
+import de.jeha.photo.mosaic.core.RGBA;
 import de.jeha.photo.mosaic.core.Tile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +58,7 @@ public class PhotoMosaic {
             for (int y = 0; y < source.getHeight() - tileHeight; y += tileHeight) {
                 LOG.trace("tile x={}, y={}", x, y);
                 BufferedImage tile = source.getSubimage(x, y, tileWidth, tileHeight);
-                ColorCalculator.RGBA averageColor = ColorCalculator.averageColor(tile);
+                RGBA averageColor = ColorCalculator.averageColor(tile);
                 LOG.trace("tile average color r={}, g={}, b={}",
                         (int) averageColor.getR(), (int) averageColor.getG(), (int) averageColor.getB());
                 WritableRaster writableRaster = target.getWritableTile(x, y);
@@ -119,7 +120,7 @@ public class PhotoMosaic {
                     if (filename.endsWith(".png") || filename.endsWith(".jpg")) {
                         BufferedImage image = ImageIO.read(new File(root.getAbsolutePath() + "/" + filename));
                         BufferedImage scaledImage = ImageScaler.scale(image, tileWidth, tileHeight);
-                        ColorCalculator.RGBA rgba = ColorCalculator.averageColor(scaledImage);
+                        RGBA rgba = ColorCalculator.averageColor(scaledImage);
                         tileMap.put(filename, new Tile(scaledImage, rgba.asColor()));
                     } else {
                         LOG.info("Ignore '{}' as input file: unsupported file extension", filename);
