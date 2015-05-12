@@ -17,7 +17,7 @@ java -jar target/photo-mosaic.jar -d <input directory> <target filename>
 - [x] make it basically work
 - [x] use args4j to collect command line arguments
 - [ ] tidy up / refactor
-- [ ] support reading images for collection recursivly from given directory
+- [ ] support reading the images of the collection recursively from given directory
 - [ ] introduce different strategies for placing the tiles
 - [ ] use multiple threads
 
