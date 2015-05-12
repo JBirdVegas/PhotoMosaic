@@ -1,5 +1,6 @@
-package de.jeha.photo.mosaic;
+package de.jeha.photo.mosaic.cli;
 
+import de.jeha.photo.mosaic.PhotoMosaic;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;

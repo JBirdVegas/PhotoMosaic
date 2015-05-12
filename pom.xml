@@ -104,7 +104,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>de.jeha.photo.mosaic.Main</mainClass>
+                            <mainClass>de.jeha.photo.mosaic.cli.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
