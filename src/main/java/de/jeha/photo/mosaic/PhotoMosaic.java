@@ -32,7 +32,8 @@ public class PhotoMosaic {
 
     private final Map<String, Tile> tileMap = new HashMap<>();
 
-    public PhotoMosaic(String targetFilename, String inputDirectory, String outputFilename, int tileWidth, int tileHeight) {
+    public PhotoMosaic(String targetFilename, String inputDirectory, String outputFilename, int tileWidth,
+                       int tileHeight) {
         this.targetFilename = targetFilename;
         this.inputDirectory = inputDirectory;
         this.outputFilename = outputFilename;
@@ -64,7 +65,7 @@ public class PhotoMosaic {
                 // find an image that matches the average color best
                 double shortestDistance = Double.MAX_VALUE;
                 String shortestDistanceTileKey = null;
-                Color needle = averageColor.toColor();
+                Color needle = averageColor.asColor();
                 for (Map.Entry<String, Tile> entry : tileMap.entrySet()) {
                     double distance = colorDistance(needle, entry.getValue().getAverageColor());
                     if (distance < shortestDistance) {
@@ -119,7 +120,7 @@ public class PhotoMosaic {
                         BufferedImage image = ImageIO.read(new File(root.getAbsolutePath() + "/" + filename));
                         BufferedImage scaledImage = ImageScaler.scale(image, tileWidth, tileHeight);
                         ColorCalculator.RGBA rgba = ColorCalculator.averageColor(scaledImage);
-                        tileMap.put(filename, new Tile(scaledImage, rgba.toColor()));
+                        tileMap.put(filename, new Tile(scaledImage, rgba.asColor()));
                     } else {
                         LOG.info("Ignore '{}' as input file: unsupported file extension", filename);
                     }
