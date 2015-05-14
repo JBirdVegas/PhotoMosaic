@@ -23,6 +23,7 @@ import java.util.Map;
 public class PhotoMosaic {
 
     private static final Logger LOG = LoggerFactory.getLogger(PhotoMosaic.class);
+    private static final String IMAGE_FORMAT_NAME = "png";
 
     private final String targetFilename;
     private final String inputDirectory;
@@ -74,7 +75,7 @@ public class PhotoMosaic {
                         shortestDistanceTileKey = entry.getKey();
                     }
                 }
-                
+
                 // write the selected tile into the target image
                 if (shortestDistanceTileKey != null) {
                     BufferedImage selectedTile = tileMap.get(shortestDistanceTileKey).getImage();
@@ -107,7 +108,7 @@ public class PhotoMosaic {
         //LOG.debug("Writing rasterized target image");
         //ImageIO.write(target, "png", new File("target/target_debug_rasterized.png"));
 
-        ImageIO.write(target, "png", new File(outputFilename));
+        ImageIO.write(target, IMAGE_FORMAT_NAME, new File(outputFilename));
     }
 
     private void processInputDirectory() throws IOException {
@@ -143,7 +144,7 @@ public class PhotoMosaic {
     /**
      * Color distance as described by http://www.compuphase.com/cmetric.htm.
      */
-    private double colorDistance(Color c1, Color c2) {
+    private static double colorDistance(Color c1, Color c2) {
         int red1 = c1.getRed();
         int red2 = c2.getRed();
         int redMean = (red1 + red2) >> 1;
