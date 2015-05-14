@@ -62,30 +62,14 @@ public class PhotoMosaic {
                 RGBA averageColor = ColorCalculator.averageColor(tile);
                 LOG.trace("tile average color r={}, g={}, b={}",
                         (int) averageColor.getR(), (int) averageColor.getG(), (int) averageColor.getB());
-                WritableRaster writableRaster = target.getWritableTile(x, y);
 
                 // find an image that matches the average color best
-                double shortestDistance = Double.MAX_VALUE;
-                String shortestDistanceTileKey = null;
-                Color needle = averageColor.asColor();
-                for (Map.Entry<String, Tile> entry : tileMap.entrySet()) {
-                    double distance = colorDistance(needle, entry.getValue().getAverageColor());
-                    if (distance < shortestDistance) {
-                        shortestDistance = distance;
-                        shortestDistanceTileKey = entry.getKey();
-                    }
-                }
+                final String shortestDistanceTileKey = findShortestDistanceTileKey(averageColor);
 
                 // write the selected tile into the target image
                 if (shortestDistanceTileKey != null) {
-                    BufferedImage selectedTile = tileMap.get(shortestDistanceTileKey).getImage();
-                    double array[] = new double[4];
-                    for (int i = x, k = 0; i < x + tileWidth; i++, k++) {
-                        for (int j = y, l = 0; j < y + tileHeight; j++, l++) {
-                            selectedTile.getRaster().getPixel(k, l, array);
-                            writableRaster.setPixel(i, j, array);
-                        }
-                    }
+                    final BufferedImage selectedTile = tileMap.get(shortestDistanceTileKey).getImage();
+                    writeTile(selectedTile, target, x, y);
                 }
 
                 /*
@@ -109,6 +93,31 @@ public class PhotoMosaic {
         //ImageIO.write(target, "png", new File("target/target_debug_rasterized.png"));
 
         ImageIO.write(target, IMAGE_FORMAT_NAME, new File(outputFilename));
+    }
+
+    private void writeTile(BufferedImage selectedTile, BufferedImage target, int x, int y) {
+        final WritableRaster writableRaster = target.getWritableTile(x, y);
+        double array[] = new double[4];
+        for (int i = x, k = 0; i < x + tileWidth; i++, k++) {
+            for (int j = y, l = 0; j < y + tileHeight; j++, l++) {
+                selectedTile.getRaster().getPixel(k, l, array);
+                writableRaster.setPixel(i, j, array);
+            }
+        }
+    }
+
+    private String findShortestDistanceTileKey(RGBA color) {
+        double shortestDistance = Double.MAX_VALUE;
+        String shortestDistanceTileKey = null;
+        Color needle = color.asColor();
+        for (Map.Entry<String, Tile> entry : tileMap.entrySet()) {
+            double distance = colorDistance(needle, entry.getValue().getAverageColor());
+            if (distance < shortestDistance) {
+                shortestDistance = distance;
+                shortestDistanceTileKey = entry.getKey();
+            }
+        }
+        return shortestDistanceTileKey;
     }
 
     private void processInputDirectory() throws IOException {
