@@ -8,16 +8,16 @@ import java.awt.image.BufferedImage;
  */
 public class Tile {
 
-    private final BufferedImage scaledImage;
+    private final BufferedImage image;
     private final Color averageColor;
 
-    public Tile(BufferedImage scaledImage, Color averageColor) {
-        this.scaledImage = scaledImage;
+    public Tile(BufferedImage image, Color averageColor) {
+        this.image = image;
         this.averageColor = averageColor;
     }
 
-    public BufferedImage getScaledImage() {
-        return scaledImage;
+    public BufferedImage getImage() {
+        return image;
     }
 
     public Color getAverageColor() {

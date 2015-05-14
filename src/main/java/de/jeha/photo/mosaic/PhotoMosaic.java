@@ -77,7 +77,7 @@ public class PhotoMosaic {
                 
                 // write the selected tile into the target image
                 if (shortestDistanceTileKey != null) {
-                    BufferedImage selectedTile = tileMap.get(shortestDistanceTileKey).getScaledImage();
+                    BufferedImage selectedTile = tileMap.get(shortestDistanceTileKey).getImage();
                     double array[] = new double[4];
                     for (int i = x, k = 0; i < x + tileWidth; i++, k++) {
                         for (int j = y, l = 0; j < y + tileHeight; j++, l++) {
