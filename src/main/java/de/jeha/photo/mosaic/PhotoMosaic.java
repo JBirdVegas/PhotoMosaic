@@ -4,6 +4,7 @@ import de.jeha.photo.mosaic.core.ColorCalculator;
 import de.jeha.photo.mosaic.core.ImageScaler;
 import de.jeha.photo.mosaic.core.RGBA;
 import de.jeha.photo.mosaic.core.Tile;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +16,9 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author jenshadlich@googlemail.com
@@ -23,7 +26,16 @@ import java.util.Map;
 public class PhotoMosaic {
 
     private static final Logger LOG = LoggerFactory.getLogger(PhotoMosaic.class);
-    private static final String IMAGE_FORMAT_NAME = "png";
+    private static final String FILE_FORMAT_PNG = "png";
+    private static final String FILE_FORMAT_JPG = "jpg";
+    private static final String OUTPUT_FILE_FORMAT = FILE_FORMAT_PNG;
+    private static final Set<String> SUPPORTED_INPUT_FILE_FORMATS;
+
+    static {
+        SUPPORTED_INPUT_FILE_FORMATS = new HashSet<>();
+        SUPPORTED_INPUT_FILE_FORMATS.add(FILE_FORMAT_PNG);
+        SUPPORTED_INPUT_FILE_FORMATS.add(FILE_FORMAT_JPG);
+    }
 
     private final String targetFilename;
     private final String inputDirectory;
@@ -92,7 +104,7 @@ public class PhotoMosaic {
         //LOG.debug("Writing rasterized target image");
         //ImageIO.write(target, "png", new File("target/target_debug_rasterized.png"));
 
-        ImageIO.write(target, IMAGE_FORMAT_NAME, new File(outputFilename));
+        ImageIO.write(target, OUTPUT_FILE_FORMAT, new File(outputFilename));
     }
 
     private void writeTile(BufferedImage selectedTile, BufferedImage target, int x, int y) {
@@ -126,8 +138,7 @@ public class PhotoMosaic {
             String[] filenames = root.list();
             if (filenames != null) {
                 for (String filename : filenames) {
-                    // TODO: refactor supported file extensions
-                    if (filename.endsWith(".png") || filename.endsWith(".jpg")) {
+                    if (FilenameUtils.isExtension(filename, SUPPORTED_INPUT_FILE_FORMATS)) {
                         BufferedImage image = ImageIO.read(new File(root.getAbsolutePath() + "/" + filename));
                         BufferedImage scaledImage = ImageScaler.scale(image, tileWidth, tileHeight);
                         RGBA rgba = ColorCalculator.averageColor(scaledImage);
