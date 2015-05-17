@@ -138,13 +138,16 @@ public class PhotoMosaic {
             String[] filenames = root.list();
             if (filenames != null) {
                 for (String filename : filenames) {
-                    if (FilenameUtils.isExtension(filename, SUPPORTED_INPUT_FILE_FORMATS)) {
-                        BufferedImage image = ImageIO.read(new File(root.getAbsolutePath() + "/" + filename));
-                        BufferedImage scaledImage = ImageScaler.scale(image, tileWidth, tileHeight);
-                        RGBA rgba = ColorCalculator.averageColor(scaledImage);
-                        tileMap.put(filename, new Tile(scaledImage, rgba.asColor()));
-                    } else {
-                        LOG.info("Ignore '{}' as input file: unsupported file extension", filename);
+                    final File file = new File(root.getAbsolutePath() + "/" + filename);
+                    if (!file.isDirectory()) {
+                        if (FilenameUtils.isExtension(filename, SUPPORTED_INPUT_FILE_FORMATS)) {
+                            BufferedImage image = ImageIO.read(file);
+                            BufferedImage scaledImage = ImageScaler.scale(image, tileWidth, tileHeight);
+                            RGBA rgba = ColorCalculator.averageColor(scaledImage);
+                            tileMap.put(filename, new Tile(scaledImage, rgba.asColor()));
+                        } else {
+                            LOG.info("Ignore '{}' as input file: unsupported file extension", filename);
+                        }
                     }
                 }
                 LOG.info("added {} images as tiles", tileMap.size());
