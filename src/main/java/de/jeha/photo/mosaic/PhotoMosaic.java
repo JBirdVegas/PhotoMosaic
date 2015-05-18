@@ -40,7 +40,7 @@ public class PhotoMosaic {
     private final String targetFilename;
     private final String inputDirectory;
     private final String outputFilename;
-    private final boolean recursive = false;
+    private final boolean recursive = false; // TODO
     private final int tileWidth;
     private final int tileHeight;
 
