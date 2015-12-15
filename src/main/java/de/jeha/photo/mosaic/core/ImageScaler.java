@@ -17,4 +17,5 @@ public class ImageScaler {
 
         return output;
     }
+
 }

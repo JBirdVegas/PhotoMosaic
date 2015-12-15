@@ -56,7 +56,13 @@ public class Main {
             return;
         }
 
-        new PhotoMosaic(targetImageFilename, inputDirectory, outputFilename, tileWidth, tileHeight).create();
+        new PhotoMosaic(
+                targetImageFilename,
+                inputDirectory,
+                outputFilename,
+                tileWidth,
+                tileHeight
+        ).create();
 
         System.out.println("File '" + outputFilename + "' created successfully.");
     }
