@@ -26,8 +26,7 @@ public class Main {
     @Option(name = "-o", usage = "name of output file")
     private String outputFilename = "out.png";
 
-    // TODO: hide this option until it's properly implemented
-    @Option(name = "-t", usage = "number of threads", hidden = true)
+    @Option(name = "-t", usage = "number of threads")
     private Integer threads = 1;
 
     @Option(name = "-w", usage = "tile width")
