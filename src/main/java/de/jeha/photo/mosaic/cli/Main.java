@@ -6,7 +6,9 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Locale;
 
 /**
@@ -14,6 +16,7 @@ import java.util.Locale;
  */
 public class Main {
 
+    private static final String DEFAULT_SCALE_ARRAY = "1";
     private static final int DEFAULT_TILE_WIDTH = 40;
     private static final int DEFAULT_TILE_HEIGHT = 30;
 
@@ -23,8 +26,7 @@ public class Main {
     @Option(name = "-o", usage = "name of output file")
     private String outputFilename = "out.png";
 
-    // TODO: hide this option until it's properly implemented
-    @Option(name = "-t", usage = "number of threads", hidden = true)
+    @Option(name = "-t", usage = "number of threads")
     private Integer threads = 1;
 
     @Option(name = "-w", usage = "tile width")
@@ -33,6 +35,10 @@ public class Main {
     @Option(name = "-h", usage = "tile height")
     private int tileHeight = DEFAULT_TILE_HEIGHT;
 
+    @Option(name = "-scales", usage = "Scales separated by commas")
+    private String scales = DEFAULT_SCALE_ARRAY;
+
+    @Option(name = "-targetImages", usage = "Target images separated by commas")
     @Argument(required = true)
     private String targetImageFilename;
 
@@ -56,15 +62,29 @@ public class Main {
             return;
         }
 
+        File output = new File(outputFilename);
+        String[] targetScales = scales.split(",");
+        double[] scaleArray = new double[targetScales.length];
+        for (int i = 0, targetScalesLength = targetScales.length; i < targetScalesLength; i++) {
+            scaleArray[i] = Double.parseDouble(targetScales[i]);
+        }
+
+        String[] targetsImagePaths = targetImageFilename.split(",");
+
+        System.out.println("Scales: " + Arrays.toString(scaleArray));
+        System.out.println("Target images: " + Arrays.toString(targetsImagePaths));
+
         new PhotoMosaic(
-                targetImageFilename,
+                targetsImagePaths,
                 inputDirectory,
-                outputFilename,
+                output,
                 tileWidth,
-                tileHeight
+                tileHeight,
+                threads,
+                scaleArray
         ).create();
 
-        System.out.println("File '" + outputFilename + "' created successfully.");
+        System.out.println("File '" + output.getAbsolutePath() + "' created successfully.");
     }
 
 }

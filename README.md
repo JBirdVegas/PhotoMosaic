@@ -2,15 +2,27 @@
 
 Creates a photo mosaic for a given target image from a collection of images.
 
-##### Build:
-(requires Java 7 or higher)
+## Maven builds
+
+##### Build, with maven:
+(requires Java 8 or higher)
 ```
 mvn clean install
 ```
 
-##### Usage:
+##### Usage, if built from maven:
 ```
 java -jar target/photo-mosaic.jar -d <input directory> <target filename>
+```
+
+## Gradle builds
+```
+# build jar
+gradle clean build
+
+# use jar
+# version postfix depends on version defined by `build.gradle`
+java -jar build/libs/photo-mosaic-SNAPSHOT-0.1.jar <input directory> <target filename>
 ```
 
 ##### Current TODOs:
@@ -19,7 +31,7 @@ java -jar target/photo-mosaic.jar -d <input directory> <target filename>
 - [ ] tidy up / refactor
 - [ ] support reading the images of the collection recursively from given directory
 - [ ] introduce different strategies for placing the tiles
-- [ ] use multiple threads
+- [X] use multiple threads
 
 ## My first test result
 Used a tile size of 40x30 pixels. The provided image collection was quite poor. Nevertheless, I like it :smile:
