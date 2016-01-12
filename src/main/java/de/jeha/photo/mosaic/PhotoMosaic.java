@@ -1,10 +1,7 @@
 package de.jeha.photo.mosaic;
 
 import de.jeha.photo.mosaic.concurrents.MosaicThreadPoolHandler;
-import de.jeha.photo.mosaic.core.ColorCalculator;
-import de.jeha.photo.mosaic.core.ImageScaler;
-import de.jeha.photo.mosaic.core.RGBA;
-import de.jeha.photo.mosaic.core.Tile;
+import de.jeha.photo.mosaic.core.*;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +22,7 @@ import java.util.*;
 public class PhotoMosaic {
 
     private static final Logger LOG = LoggerFactory.getLogger(PhotoMosaic.class);
+
     private static final String FILE_FORMAT_PNG = "png";
     private static final String FILE_FORMAT_JPG = "jpg";
     private static final String FILE_FORMAT_JPEG = "jpeg";
@@ -186,7 +184,7 @@ public class PhotoMosaic {
             String shortestDistanceTileKey = null;
             Color needle = color.asColor();
             for (Map.Entry<String, Tile> entry : tileMap.entrySet()) {
-                double distance = colorDistance(needle, entry.getValue().getAverageColor());
+                double distance = ColorDistance.calculate(needle, entry.getValue().getAverageColor());
                 if (distance < shortestDistance) {
                     shortestDistance = distance;
                     shortestDistanceTileKey = entry.getKey();
@@ -227,19 +225,6 @@ public class PhotoMosaic {
         } else {
             LOG.error("can't access directory '{}'", inputDirectory);
         }
-    }
-
-    /**
-     * Color distance as described by http://www.compuphase.com/cmetric.htm.
-     */
-    private static double colorDistance(Color c1, Color c2) {
-        int red1 = c1.getRed();
-        int red2 = c2.getRed();
-        int redMean = (red1 + red2) >> 1;
-        int r = red1 - red2;
-        int g = c1.getGreen() - c2.getGreen();
-        int b = c1.getBlue() - c2.getBlue();
-        return Math.sqrt((((512 + redMean) * r * r) >> 8) + 4 * g * g + (((767 - redMean) * b * b) >> 8));
     }
 
     private static class ProcessImageJob implements Runnable {
