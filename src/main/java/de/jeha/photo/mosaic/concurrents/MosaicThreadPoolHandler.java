@@ -1,17 +1,22 @@
 package de.jeha.photo.mosaic.concurrents;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.concurrent.*;
 
 public class MosaicThreadPoolHandler {
-    private static ThreadPoolExecutor executor;
-    private MosaicThreadMonitor mosaicThreadMonitor;
+
+    private static final Logger LOG = LoggerFactory.getLogger(MosaicThreadPoolHandler.class);
+
+    private final ThreadPoolExecutor executor;
+    private final MosaicThreadMonitor mosaicThreadMonitor;
 
     public MosaicThreadPoolHandler(int numberOfThreads) {
         ThreadFactory factory = Executors.defaultThreadFactory();
         executor = new ThreadPoolExecutor(numberOfThreads, numberOfThreads * 2, 10, TimeUnit.SECONDS,
-                new ArrayBlockingQueue<Runnable>(100000), factory,
-                (r, executor1) ->
-                        System.err.println("Rejected runnable: " + r.toString()));
+                new ArrayBlockingQueue<>(100_000), factory,
+                (r, executor1) -> LOG.error("Rejected runnable {}", r.toString()));
         mosaicThreadMonitor = new MosaicThreadMonitor(executor, 5);
         Thread thread = new Thread(mosaicThreadMonitor);
         thread.start();
@@ -31,10 +36,10 @@ public class MosaicThreadPoolHandler {
             try {
                 Thread.sleep(TimeUnit.SECONDS.toMillis(5));
             } catch (InterruptedException e) {
-                System.err.println("Sleep was interrupted");
-                e.printStackTrace();
+                LOG.warn("Sleep was interrupted", e);
             }
         }
         shutdown();
     }
+
 }
