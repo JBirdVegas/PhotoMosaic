@@ -4,13 +4,14 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 class MosaicThreadMonitor implements Runnable {
-    private ThreadPoolExecutor executor;
-    private int seconds;
+
+    private final ThreadPoolExecutor executor;
+    private final int delaySeconds;
     private boolean isRunning = true;
 
-    /* package */ MosaicThreadMonitor(ThreadPoolExecutor threadPoolExecutor, int delay) {
-        executor = threadPoolExecutor;
-        seconds = delay;
+    MosaicThreadMonitor(ThreadPoolExecutor executor, int delaySeconds) {
+        this.executor = executor;
+        this.delaySeconds = delaySeconds;
     }
 
     @Override
@@ -26,7 +27,7 @@ class MosaicThreadMonitor implements Runnable {
                             executor.isShutdown(),
                             executor.isTerminated()));
             try {
-                Thread.sleep(TimeUnit.SECONDS.toMillis(seconds));
+                Thread.sleep(TimeUnit.SECONDS.toMillis(delaySeconds));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -36,4 +37,5 @@ class MosaicThreadMonitor implements Runnable {
     void shutdown() {
         isRunning = false;
     }
+
 }
