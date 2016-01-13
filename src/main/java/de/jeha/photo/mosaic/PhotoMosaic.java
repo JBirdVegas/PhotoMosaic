@@ -3,6 +3,7 @@ package de.jeha.photo.mosaic;
 import de.jeha.photo.mosaic.concurrents.MosaicThreadPoolHandler;
 import de.jeha.photo.mosaic.core.*;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,8 +67,10 @@ public class PhotoMosaic {
     }
 
     public void create() throws IOException {
-        long start = System.currentTimeMillis();
         LOG.info("Target image path: {}", Arrays.toString(targetFilePaths));
+
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
 
         processInputDirectory(threads);
 
@@ -82,7 +85,9 @@ public class PhotoMosaic {
         }
         threadPoolHandler.shutdownWhenDone();
 
-        LOG.info("Total execution time: {}", System.currentTimeMillis() - start);
+        stopWatch.stop();
+
+        LOG.info("Total execution time: {} s", stopWatch.getTime() / 1_000);
     }
 
     private static class CreateTargetImageJob implements Runnable {
@@ -117,7 +122,9 @@ public class PhotoMosaic {
         // scale should be 1.0+ to enlarge or <1.0 to shrink
         private void createTargetImage(BufferedImage source, String outputFileNamePostfix, double sourceScaleFactor)
                 throws IOException {
-            long start = System.currentTimeMillis();
+            final StopWatch stopWatch = new StopWatch();
+            stopWatch.start();
+
             final int correctedWidth = (int) (source.getWidth() * sourceScaleFactor / tileWidth) * tileWidth;
             final int correctedHeight = (int) (source.getHeight() * sourceScaleFactor / tileHeight) * tileHeight;
             LOG.info("target image h={}, w={}, postfix={} scale={}", correctedHeight, correctedWidth,
@@ -156,8 +163,12 @@ public class PhotoMosaic {
             }
 
             File output = addPostfixToFile(targetImageFile, outputFileNamePostfix);
-            LOG.info(String.format("Processing took: %d seconds\nFile output: %s",
-                    (System.currentTimeMillis() - start) / 1000, output.getAbsolutePath()));
+
+            stopWatch.stop();
+
+            LOG.info("Processing time: {} s", stopWatch.getTime() / 1_000);
+            LOG.info("File output: {}", output.getAbsolutePath());
+
             ImageIO.write(target, OUTPUT_FILE_FORMAT, output);
         }
 
@@ -248,19 +259,20 @@ public class PhotoMosaic {
                     LOG.error("Parent project was collected before job could run... abandoning jobs");
                     return;
                 }
-                long startFile = System.currentTimeMillis();
+                final StopWatch stopWatch = new StopWatch();
+                stopWatch.start();
                 BufferedImage image = ImageIO.read(imageFile);
                 BufferedImage scaledImage = ImageScaler.scale(image, photoMosaic.tileWidth, photoMosaic.tileHeight);
                 RGBA rgba = ColorCalculator.averageColor(scaledImage);
                 photoMosaic.tileMap.put(imageFile.getAbsolutePath(), new Tile(scaledImage, rgba.asColor()));
-                LOG.info(String.format("[%d/%d] Image took %d ms to analyse: %s",
-                        position,
-                        jobsCount,
-                        System.currentTimeMillis() - startFile,
-                        imageFile.getAbsolutePath()));
+                stopWatch.stop();
+
+                LOG.info("[{}/{}] Image took {} ms to analyse: {}",
+                        position, jobsCount, stopWatch.getTime(), imageFile.getAbsolutePath());
             } catch (IOException e) {
                 LOG.error("Failed to process image!", e);
             }
         }
     }
+
 }
