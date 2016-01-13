@@ -82,7 +82,7 @@ public class PhotoMosaic {
         }
         threadPoolHandler.shutdownWhenDone();
 
-        System.out.println("Total execution time: " + (System.currentTimeMillis() - start));
+        LOG.info("Total execution time: {}", System.currentTimeMillis() - start);
     }
 
     private static class CreateTargetImageJob implements Runnable {
@@ -245,7 +245,7 @@ public class PhotoMosaic {
             try {
                 PhotoMosaic photoMosaic = photoMosaicWeakReference.get();
                 if (photoMosaic == null) {
-                    System.err.println("Parent project was collected before job could run... abandoning jobs");
+                    LOG.error("Parent project was collected before job could run... abandoning jobs");
                     return;
                 }
                 long startFile = System.currentTimeMillis();
