@@ -1,9 +1,14 @@
 package de.jeha.photo.mosaic.concurrents;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 class MosaicThreadMonitor implements Runnable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MosaicThreadMonitor.class);
 
     private final ThreadPoolExecutor executor;
     private final int delaySeconds;
@@ -17,19 +22,18 @@ class MosaicThreadMonitor implements Runnable {
     @Override
     public void run() {
         while (isRunning) {
-            System.out.println(
-                    String.format("[monitor] [%d/%d] Active: %d, Completed: %d, Task: %d, isShutdown: %s, isTerminated: %s",
-                            executor.getPoolSize(),
-                            executor.getCorePoolSize(),
-                            executor.getActiveCount(),
-                            executor.getCompletedTaskCount(),
-                            executor.getTaskCount(),
-                            executor.isShutdown(),
-                            executor.isTerminated()));
+            LOG.info("[monitor] [{}/{}] active: {}, completed: {}, task: {}, isShutdown: {}, isTerminated: {}",
+                    executor.getPoolSize(),
+                    executor.getCorePoolSize(),
+                    executor.getActiveCount(),
+                    executor.getCompletedTaskCount(),
+                    executor.getTaskCount(),
+                    executor.isShutdown(),
+                    executor.isTerminated());
             try {
                 Thread.sleep(TimeUnit.SECONDS.toMillis(delaySeconds));
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                LOG.warn("Unexpected interrupt", e);
             }
         }
     }
