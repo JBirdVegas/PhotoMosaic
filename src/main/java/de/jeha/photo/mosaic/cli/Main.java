@@ -16,7 +16,7 @@ import java.util.Locale;
  */
 public class Main {
 
-    private static final String DEFAULT_SCALE_ARRAY = "1";
+    private static final String DEFAULT_SCALES_ARRAY = "1";
     private static final int DEFAULT_TILE_WIDTH = 40;
     private static final int DEFAULT_TILE_HEIGHT = 30;
 
@@ -36,7 +36,7 @@ public class Main {
     private int tileHeight = DEFAULT_TILE_HEIGHT;
 
     @Option(name = "-scales", usage = "Scales separated by commas")
-    private String scales = DEFAULT_SCALE_ARRAY;
+    private String scales = DEFAULT_SCALES_ARRAY;
 
     @Option(name = "-targetImages", usage = "Target images separated by commas")
     @Argument(required = true)
@@ -63,15 +63,11 @@ public class Main {
         }
 
         File output = new File(outputFilename);
-        String[] targetScales = scales.split(",");
-        double[] scaleArray = new double[targetScales.length];
-        for (int i = 0, targetScalesLength = targetScales.length; i < targetScalesLength; i++) {
-            scaleArray[i] = Double.parseDouble(targetScales[i]);
-        }
 
+        double[] scalesArray = parseScales(scales);
         String[] targetsImagePaths = targetImageFilename.split(",");
 
-        System.out.println("Scales: " + Arrays.toString(scaleArray));
+        System.out.println("Scales: " + Arrays.toString(scalesArray));
         System.out.println("Target images: " + Arrays.toString(targetsImagePaths));
 
         new PhotoMosaic(
@@ -81,10 +77,19 @@ public class Main {
                 tileWidth,
                 tileHeight,
                 threads,
-                scaleArray
+                scalesArray
         ).create();
 
         System.out.println("File '" + output.getAbsolutePath() + "' created successfully.");
+    }
+
+    private double[] parseScales(String scales) {
+        String[] targetScales = scales.split(",");
+        double[] scalesArray = new double[targetScales.length];
+        for (int i = 0, targetScalesLength = targetScales.length; i < targetScalesLength; i++) {
+            scalesArray[i] = Double.parseDouble(targetScales[i]);
+        }
+        return scalesArray;
     }
 
 }
