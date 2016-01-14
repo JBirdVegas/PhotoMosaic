@@ -14,9 +14,13 @@ public class MosaicThreadPoolHandler {
 
     public MosaicThreadPoolHandler(int numberOfThreads) {
         ThreadFactory factory = Executors.defaultThreadFactory();
-        executor = new ThreadPoolExecutor(numberOfThreads, numberOfThreads * 2, 10, TimeUnit.SECONDS,
-                new ArrayBlockingQueue<>(100_000), factory,
-                (r, executor1) -> LOG.error("Rejected runnable {}", r.toString()));
+        executor = new ThreadPoolExecutor(
+                numberOfThreads,
+                numberOfThreads * 2,
+                10,
+                TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(100_000), factory, (r, e) -> LOG.error("Rejected runnable {}", r.toString())
+        );
         mosaicThreadMonitor = new MosaicThreadMonitor(executor, 5);
         Thread thread = new Thread(mosaicThreadMonitor);
         thread.start();
@@ -36,7 +40,7 @@ public class MosaicThreadPoolHandler {
             try {
                 Thread.sleep(TimeUnit.SECONDS.toMillis(5));
             } catch (InterruptedException e) {
-                LOG.warn("Sleep was interrupted", e);
+                LOG.warn("Unexpected interrupt", e);
             }
         }
         shutdown();
